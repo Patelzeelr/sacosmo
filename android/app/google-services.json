@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "804386871232",
+    "project_id": "cosmobeauty-ef982",
+    "storage_bucket": "cosmobeauty-ef982.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:804386871232:android:02c0c6cc49aa01fbdc9a25",
+        "android_client_info": {
+          "package_name": "com.sa.cosmo_beauty"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "804386871232-jvgrfn714pdg9jqgtg7joq51cvmgog6b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sa.cosmo_beauty",
+            "certificate_hash": "5b26f872cb4a738ef2904aec34830a9c454464c6"
+          }
+        },
+        {
+          "client_id": "804386871232-06jop4qf595hreloob3ai2p7nfqcg9u7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbh3nYvBpCFigvB39Uzsk3m3q-i0qo3Y8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "804386871232-06jop4qf595hreloob3ai2p7nfqcg9u7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
