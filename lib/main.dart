@@ -1,13 +1,19 @@
-import 'package:cosmo_beauty/src/ui/auth/screens/forgot_password_number_screen.dart';
-import 'package:cosmo_beauty/src/ui/auth/screens/forgot_password_otp_screen.dart';
-import 'package:cosmo_beauty/src/ui/auth/screens/login_screen.dart';
-import 'package:cosmo_beauty/src/ui/home/screens/home_screen.dart';
+import 'package:cosmo_beauty/src/base/constants/color_constant.dart';
+import 'package:cosmo_beauty/src/ui/home/provider/address_provider.dart';
+import 'package:cosmo_beauty/src/ui/home/provider/cart_provider.dart';
+import 'package:cosmo_beauty/src/ui/home/provider/checkout_provider.dart';
+import 'package:cosmo_beauty/src/ui/home/provider/favourite_provider.dart';
+import 'package:cosmo_beauty/src/ui/welcome/screens/splash_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
-void main() {
+Future<void> main() async{
+
  /* SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
       overlays: [SystemUiOverlay.bottom]);*/
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -16,9 +22,28 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: HomeScreen(),
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider<FavouriteProvider>(
+            create: (context) => FavouriteProvider(),
+          ),
+          ChangeNotifierProvider<AddressProvider>(
+            create: (context) => AddressProvider()
+          ),
+          ChangeNotifierProvider<ReviewCartProvider>(
+              create: (context) => ReviewCartProvider()
+          ),
+          ChangeNotifierProvider<CheckoutProvider>(
+              create: (context) => CheckoutProvider()
+          ),
+        ],
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData.light().copyWith(
+            colorScheme: ColorScheme.light(secondary: pink),
+          ),
+          home: SplashScreen(),
+        ),
     );
   }
 }

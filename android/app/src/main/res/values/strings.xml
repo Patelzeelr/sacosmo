@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Cosmo Beauty</string>
+    <string name="facebook_app_id">806655376935024</string>
+    <string name="fb_login_protocol_scheme">fb806655376935024</string>
+    <string name="facebook_client_token">a98920125572458833965725cc6342b6</string>
+</resources>

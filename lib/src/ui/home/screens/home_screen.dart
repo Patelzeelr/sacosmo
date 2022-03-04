@@ -1,12 +1,12 @@
-import 'package:cosmo_beauty/src/base/constants/color_constant.dart';
-import 'package:cosmo_beauty/src/ui/home/constants/color_constant.dart';
-import 'package:cosmo_beauty/src/ui/home/constants/string_constant.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cosmo_beauty/src/ui/home/widgets/container_list.dart';
 import 'package:cosmo_beauty/src/ui/home/widgets/custom_card.dart';
 import 'package:cosmo_beauty/src/ui/home/widgets/custom_card_category.dart';
 import 'package:cosmo_beauty/src/ui/home/widgets/custom_padding.dart';
-import 'package:cosmo_beauty/widgets/custom_image_container.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cosmo_beauty/src/ui/home/widgets/custom_popular_list.dart';
+import 'package:cosmo_beauty/src/ui/home/widgets/custom_image_container.dart';
 import 'package:flutter/material.dart';
+import '../../../base/constants/strings_constant.dart';
 
 class HomeScreen extends StatefulWidget{
 
@@ -16,109 +16,29 @@ class HomeScreen extends StatefulWidget{
 
 class _HomeScreenState extends State<HomeScreen> {
 
-  static const TextStyle optionStyle =
-  TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Index 0: Home',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 1: Business',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 2: School',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 3: No',
-      style: optionStyle,
-    ),
-  ];
-
-  int _selectedIndex = 0;
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: SingleChildScrollView(
+        physics: ScrollPhysics(),
         child: Column(
           children: [
             CustomImageContainer(),
             const SizedBox(height: 20.0,),
-            CustomPadding(arrivals),
-            //Center(child: _widgetOptions.elementAt(_selectedIndex),),
+            CustomPadding(arrivals,Alignment.bottomLeft,kTextBoldStyle),
             const SizedBox(height: 10.0,),
-            Container(
-                width: size.width * 100,
-                height: size.height * 0.36,
-                child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: 10,
-                    itemBuilder: (context,i) => CustomCard()
-                ),
-              ),
+            ContainerList(CustomCard(),100.0,0.42),
+            CustomPadding(category,Alignment.bottomLeft,kTextBoldStyle),
             const SizedBox(height: 10.0,),
-            CustomPadding(category),
+            ContainerList(CustomCategoryCard(),100.0,0.15),
             const SizedBox(height: 10.0,),
-            Container(
-              width: size.width * 100,
-              height: size.height * 0.15,
-              child: CustomCategoryCard(),
-            ),
-            const SizedBox(height: 10.0,),
-            CustomPadding(popular),
+            CustomPadding(popular,Alignment.bottomLeft,kTextBoldStyle),
+            CustomPopularList(),
           ],
         ),
       ),
-      bottomNavigationBar: _bottomBar()
     );
   }
-  Widget _bottomBar() => Container(
-    decoration: const BoxDecoration(
-      borderRadius: BorderRadius.only(
-          topRight: Radius.circular(30), topLeft: Radius.circular(30)),
-      boxShadow: [
-        BoxShadow(color: pink, spreadRadius: 0, blurRadius: 5),
-      ],
-    ),
-    child: ClipRRect(
-      borderRadius: const BorderRadius.only(
-        topLeft: Radius.circular(30.0),
-        topRight: Radius.circular(30.0),
-      ),
-      child: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: wishlist,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.business),
-            label: home,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.school),
-            label: brand,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.school),
-            label: account,
-          ),
-        ],
-        unselectedItemColor: grey,
-        currentIndex: _selectedIndex,
-        selectedItemColor: black,
-        onTap: _onItemTapped,
-      ),
-    ),
-  );
 }
+

@@ -1,14 +1,29 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosmo_beauty/src/base/constants/color_constant.dart';
 import 'package:cosmo_beauty/src/base/constants/strings_constant.dart';
-import 'package:cosmo_beauty/src/ui/auth/screens/forgot_password_number_screen.dart';
-import 'package:cosmo_beauty/src/ui/auth/screens/forgot_password_otp_screen.dart';
-import 'package:cosmo_beauty/widgets/custom_black_button.dart';
-import 'package:cosmo_beauty/widgets/custom_socialmedia_button.dart';
-import 'package:cosmo_beauty/widgets/custom_textfield.dart';
+import 'package:cosmo_beauty/src/ui/home/screens/bottom_screen.dart';
+import 'package:cosmo_beauty/src/ui/home/widgets/custom_black_button.dart';
+import 'package:cosmo_beauty/src/ui/home/widgets/custom_socialmedia_button.dart';
+import 'package:cosmo_beauty/src/ui/home/widgets/custom_textfield.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class RegisterScreen extends StatelessWidget{
+import '../widgets/google_button.dart';
+
+class RegisterScreen extends StatefulWidget{
+
+  @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
+  final _auth = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
+
+  final userNameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +35,6 @@ class RegisterScreen extends StatelessWidget{
             signup,
             style: TextStyle(fontFamily: 'Raleway',color: Colors.black,fontWeight: FontWeight.bold),),
           centerTitle: true,
-          leading: const Icon(Icons.arrow_back_ios,color: Colors.black,),
-
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -29,11 +42,17 @@ class RegisterScreen extends StatelessWidget{
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                CustomTextField(fullName, (value){}),
+                CustomTextField(fullName,userNameController, (value){
+                  value = userNameController.text;
+                },false),
                 SizedBox(height: 20.0),
-                CustomTextField(email, (value){}),
+                CustomTextField(email, emailController, (value){
+                  value = emailController.text;
+                },false),
                 SizedBox(height: 20.0),
-                CustomTextField(password, (value){}),
+                CustomTextField(password, passwordController, (value){
+                  value = passwordController.text;
+                },true),
                 const SizedBox(height: 20.0),
                 RichText(
                     text: const TextSpan(
@@ -45,10 +64,21 @@ class RegisterScreen extends StatelessWidget{
                       ]
                     ),
                 ),
-                BlackButton(signup, () {
-                  Navigator.pushReplacement(context, MaterialPageRoute(
-                      builder: (context) => ForgotPasswordNumberScreen()
-                  ));
+                BlackButton(signup, () async{
+                  try{
+                    final newUser = await _auth.createUserWithEmailAndPassword(email: emailController.text, password: passwordController.text);
+                    Map<String, dynamic> userData = {
+                      'name': userNameController.text.trim(),
+                      'email': emailController.text.trim(),
+                      'password': passwordController.text.trim(),
+                    };
+                    _firestore.collection('user').add(userData);
+                    if(newUser != null) {
+                      Navigator.pushReplacement(context, MaterialPageRoute(
+                          builder: (context) => BottomScreen()
+                      ));
+                    }
+                  } catch (e) { print(e); }
                 }),
                 SizedBox(height: 20.0),
                 const Text(socialMediaLabel),
@@ -59,7 +89,7 @@ class RegisterScreen extends StatelessWidget{
                   children: [
                     SocialMediaButton(fbColor,Icons.facebook,white,(){}),
                     const SizedBox(width: 20.0),
-                    _googleButton(context),
+                    GoogleButton(),
                   ],
                 )
               ],
@@ -68,18 +98,4 @@ class RegisterScreen extends StatelessWidget{
         )
     );
   }
-  Widget _googleButton(context) => Padding(
-    padding: EdgeInsets.symmetric(vertical: 16.0),
-    child: Material(
-      color: white,
-      elevation: 5.0,
-      borderRadius: BorderRadius.circular(30.0),
-      child: MaterialButton(
-          onPressed: (){},
-          minWidth: MediaQuery.of(context).size.width * 0.4,
-          height: 42.0,
-          child: Image.asset('assets/images/google.png',height: 26.0,width: 26.0,)
-      ),
-    ),
-  );
 }
