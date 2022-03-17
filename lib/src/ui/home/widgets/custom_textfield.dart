@@ -1,18 +1,23 @@
-import 'package:cosmo_beauty/src/base/constants/color_constant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../../base/constants/color_constant.dart';
+
 class CustomTextField extends StatelessWidget {
-  CustomTextField(this.labelText,this.controller,this.onChange,this.textShow);
+  CustomTextField(this.labelText,this.controller,this.onChange,this.onCheck,this.textShow);
 
   String labelText;
   final TextEditingController controller;
   final Function(String)? onChange;
+  //FormFieldValidator onCheck;
+  final onCheck;
   final bool textShow;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      validator: onCheck,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       keyboardType: TextInputType.emailAddress,
       cursorColor: grey,
       obscureText: textShow,

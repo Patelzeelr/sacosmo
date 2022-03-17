@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../base/constants/strings_constant.dart';
+import '../../../base/constants/textstyle_constant.dart';
 import '../provider/cart_provider.dart';
 
 

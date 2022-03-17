@@ -1,11 +1,13 @@
 import 'dart:async';
-
-import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:cosmo_beauty/src/ui/home/screens/bottom_screen.dart';
 import 'package:cosmo_beauty/src/ui/welcome/screens/welcome_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'dart:math' as math;
+
+import '../../../base/constants/color_constant.dart';
+import '../../../base/constants/image_constant.dart';
+import '../../../base/constants/strings_constant.dart';
+import '../../home/screens/bottom_screen.dart';
 
 class SplashScreen extends StatefulWidget{
 
@@ -13,25 +15,30 @@ class SplashScreen extends StatefulWidget{
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin{
+  late final AnimationController _controller = AnimationController(vsync: this, duration: const Duration(seconds: 3))..repeat();
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     Future.delayed(const Duration(milliseconds: 3000), () {
       final _currentUser = FirebaseAuth.instance.currentUser;
 
       if (_currentUser?.email != null) {
-        Navigator.push(context, MaterialPageRoute(
+        Navigator.pushReplacement(context, MaterialPageRoute(
             builder: (context) => BottomScreen() //ReviewCart()
         ));
       } else {
-        Navigator.push(context, MaterialPageRoute(
+        Navigator.pushReplacement(context, MaterialPageRoute(
             builder: (context) => WelcomeScreen() //ReviewCart()
         ));
       }
     });
+  }
+
+  dispose() {
+    _controller.dispose(); // you need this
+    super.dispose();
   }
 
   @override
@@ -41,37 +48,36 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Stack(
         children: [
           Container(
+            color: splashScreenColor,
             width: size.width * 100,
             height: size.height * 100,
-            // color: Colors.orange,
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/spbg.png'),
-                fit: BoxFit.cover,
-              ),
+          ),
+          Center(
+            child: AnimatedBuilder(
+              animation: _controller,
+              builder: (_, child) {
+                return Transform.rotate(
+                  angle: _controller.value * 2 * math.pi,
+                  child: child,
+                );
+              },
+              child: const Image(image: AssetImage(appLogo)),
             ),
           ),
           Container(
-            margin: EdgeInsets.only(left:90.0,top: 550.0),
-            child: SizedBox(
+            margin: const EdgeInsets.only(left:90.0,top: 550.0),
+            child: const SizedBox(
                 width: 250.0,
                 child: DefaultTextStyle(
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 20.0,
                     fontFamily: 'Raleway',
-                    color: Color(0xFF8f7d5e)
+                    color: splashScreenTextColor
                   ),
-                  child: AnimatedTextKit(
-                    animatedTexts: [
-                      TypewriterAnimatedText('SA COSMO BEAUTY'),
-                    ],
-                    onTap: () {
-                      print("Tap Event");
-                    },
+                  child: Text(appName),
                   ),
                 ),
               ),
-            ),
         ],
       ),
     );

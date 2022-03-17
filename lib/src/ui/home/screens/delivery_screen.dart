@@ -1,13 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cosmo_beauty/src/ui/home/screens/payment_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../base/constants/color_constant.dart';
-import '../../../base/constants/strings_constant.dart';
-import '../model/address_model.dart';
+import '../../../base/constants/icons_constant.dart';
+import '../../../base/constants/param_constant.dart';
+import '../../../base/constants/textstyle_constant.dart';
 import '../provider/checkout_provider.dart';
-import 'add_deliver_address.dart';
+import '../widgets/custom_address_row.dart';
+import 'add_address.dart';
+import 'payment_screen.dart';
 
 class DeliveryDetails extends StatefulWidget {
   @override
@@ -17,7 +19,7 @@ class DeliveryDetails extends StatefulWidget {
 class _DeliveryDetailsState extends State<DeliveryDetails> {
   List _allResults = [];
 
-  getProductDetail() async{
+  getAddressDetail() async{
     var data = await FirebaseFirestore.instance.collection('user').doc(FirebaseAuth.instance.currentUser?.email).collection('addressList').get();
     setState(() {
       _allResults =  data.docs;
@@ -31,17 +33,19 @@ class _DeliveryDetailsState extends State<DeliveryDetails> {
   @override
   void initState() {
     super.initState();
-    getProductDetail();
+    getAddressDetail();
   }
 
 
   @override
   Widget build(BuildContext context) {
+    CheckoutProvider deliveryAddressProvider = Provider.of(context);
+    deliveryAddressProvider.getDeliveryAddressData();
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,
         backgroundColor: white,
-        leading: IconButton(icon: Icon(Icons.arrow_back_ios,color: black), onPressed: (){
+        leading: IconButton(icon: Icon(iconArrow,color: black), onPressed: (){
           Navigator.pop(context);
         },),
       ),
@@ -50,29 +54,28 @@ class _DeliveryDetailsState extends State<DeliveryDetails> {
         height: 48,
         margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
         child: MaterialButton(
-          //deliveryAddressProvider.getDeliveryAddressList.isEmpty
-            child: Text("Add new Address",style: TextStyle(color: white)),
-          onPressed: () {
-          Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => AddDeliverAddress(),
-              ),
-            );
+          child: _allResults.isEmpty
+              ? Text("Add Address", style: kTextWhiteStyle)
+              : Text("Payment Summary", style: kTextWhiteStyle),
+          onPressed: (){
+            _allResults.isEmpty
+                ? Navigator.of(context).push(MaterialPageRoute(builder: (context) => AddAddress()))
+                : Navigator.of(context).push(MaterialPageRoute(builder: (context) => PaymentScreen()));
           },
-          color: black,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(
-              30,
-            ),
-          ),
-        ),
+            color: black,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(
+                30,
+              ),
+        )
+      ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Deliver To"),
+            _allResults.isEmpty ? Text("") : Text("Deliver To"),
             SizedBox(height: 10.0),
             Divider(
               height: 1,
@@ -80,59 +83,49 @@ class _DeliveryDetailsState extends State<DeliveryDetails> {
             Flexible(
                 child:  RefreshIndicator(
                   onRefresh: ()async{
-                    getProductDetail();
+                    getAddressDetail();
                   },
                   child:ListView.builder(
                     itemCount: _allResults.length,
                     itemBuilder: (context, i) {
                       final data = _allResults[i];
-                      return GestureDetector(
-                        onTap: () {
-                          if(data != null){
-                            Navigator.push(context, MaterialPageRoute(
-                                builder: (context) => PaymentScreen(doc: data)
-                            ));
-                          } else{
-                            print(data['pincode']);
-                          }
-                        },
-                        child: Container(
-                          margin: EdgeInsets.only(bottom: 16.0),
-                          child: Row(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(20.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Icon(Icons.location_on_rounded),
-                                        SizedBox(height: 10.0),
-                                        Text(data['title'],style: kTextBoldStyle)
-                                      ],
+                      return Container(
+                        margin: EdgeInsets.only(bottom: 16.0),
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(data[paramTitle],style: kTextBoldStyle),
+                                  SizedBox(height: 10.0),
+                                  CustomAddressRow(Icons.account_circle, Text(data[paramFirstName] + data[paramLastName],style: kTextGreyBigBoldStyle)),
+                                  SizedBox(height: 10.0),
+                                  CustomAddressRow(Icons.home_work_outlined, SizedBox(width:180.0,child: Text(data[paramSociety] + data[paramLandmark] + data[paramArea] + data[paramCity],style: kTextBlackSmallStyle))),
+                                  SizedBox(
+                                    height: 20.0,
+                                    width: 300.0,
+                                    child: Center(
+                                      child: Container(
+                                        padding: EdgeInsets.all(10),
+                                        height: 1.0,
+                                        color: grey,
+                                      ),
                                     ),
-                                    SizedBox(height: 10.0),
-                                    Text(data['firstname'] + data['lastname'],style: kTextGreyBigBoldStyle),
-                                    SizedBox(height: 10.0),
-                                    SizedBox(width:180.0,child: Text(data['scoiety'] + data['landmark'] + data['aera'],style: kTextBlackSmallStyle)),
-                                    SizedBox(height: 10.0),
-                                    Text(data['city'],style: kTextBlackSmallStyle),
-                                    SizedBox(height: 10.0),
-                                    SizedBox(width:180.0,child: Text(data['pincode'],style: kTextBlackSmallStyle)),
-
-                                  ],
-                                ),
+                                  ),
+                                  CustomAddressRow(Icons.phone_android, SizedBox(width:180.0,child: Text(data[paramMobileNo],style: kTextBlackSmallStyle)),)
+                                ],
                               ),
-                            ],
-                          ),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10.0),
-                            color: white,
-                            boxShadow: [
-                              BoxShadow(color: grey.withOpacity(0.2), blurRadius: 8.0),
-                            ],
-                          ),
+                            ),
+                          ],
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: white,
+                          boxShadow: [
+                            BoxShadow(color: grey.withOpacity(0.2), blurRadius: 8.0),
+                          ],
                         ),
                       );
                     }
@@ -145,4 +138,3 @@ class _DeliveryDetailsState extends State<DeliveryDetails> {
     );
                 }
 }
-

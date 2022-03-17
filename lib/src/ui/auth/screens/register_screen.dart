@@ -1,15 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cosmo_beauty/src/base/constants/color_constant.dart';
-import 'package:cosmo_beauty/src/base/constants/strings_constant.dart';
-import 'package:cosmo_beauty/src/ui/home/screens/bottom_screen.dart';
-import 'package:cosmo_beauty/src/ui/home/widgets/custom_black_button.dart';
-import 'package:cosmo_beauty/src/ui/home/widgets/custom_socialmedia_button.dart';
-import 'package:cosmo_beauty/src/ui/home/widgets/custom_textfield.dart';
+import 'package:cosmo_beauty/src/ui/auth/widgets/socialMedia_row.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../widgets/google_button.dart';
+import '../../../base/constants/color_constant.dart';
+import '../../../base/constants/strings_constant.dart';
+import '../../../base/methods/validation_method.dart';
+import '../../home/screens/bottom_screen.dart';
+import '../../home/widgets/custom_black_button.dart';
+import '../../home/widgets/custom_textfield.dart';
+import '../widgets/circular_indicator.dart';
 
 class RegisterScreen extends StatefulWidget{
 
@@ -18,12 +18,25 @@ class RegisterScreen extends StatefulWidget{
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+  final _formKey = GlobalKey<FormState>();
+  late bool isIndicate = false;
+
   final _auth = FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
 
   final userNameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+
+  void _addUser() {
+    Map<String, dynamic> userData = {
+      'name': userNameController.text.trim(),
+      'email': emailController.text.trim(),
+      'password': passwordController.text.trim(),
+    };
+    _firestore.collection('user').doc(
+        emailController.text).set(userData);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,66 +49,81 @@ class _RegisterScreenState extends State<RegisterScreen> {
             style: TextStyle(fontFamily: 'Raleway',color: Colors.black,fontWeight: FontWeight.bold),),
           centerTitle: true,
         ),
-        body: SingleChildScrollView(
+        body: isIndicate ? CircularIndicator() : SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                CustomTextField(fullName,userNameController, (value){
-                  value = userNameController.text;
-                },false),
-                SizedBox(height: 20.0),
-                CustomTextField(email, emailController, (value){
-                  value = emailController.text;
-                },false),
-                SizedBox(height: 20.0),
-                CustomTextField(password, passwordController, (value){
-                  value = passwordController.text;
-                },true),
-                const SizedBox(height: 20.0),
-                RichText(
-                    text: const TextSpan(
-                      text: 'Terms Of Use ',
-                        style: TextStyle(fontWeight: FontWeight.bold,color: black),
-                      children: [
-                        TextSpan(text: 'and',style: TextStyle(color: grey)),
-                        TextSpan(text: ' Privacy Policy',style: TextStyle(fontWeight: FontWeight.bold,color: black)),
-                      ]
-                    ),
-                ),
-                BlackButton(signup, () async{
-                  try{
-                    final newUser = await _auth.createUserWithEmailAndPassword(email: emailController.text, password: passwordController.text);
-                    Map<String, dynamic> userData = {
-                      'name': userNameController.text.trim(),
-                      'email': emailController.text.trim(),
-                      'password': passwordController.text.trim(),
-                    };
-                    _firestore.collection('user').add(userData);
-                    if(newUser != null) {
-                      Navigator.pushReplacement(context, MaterialPageRoute(
-                          builder: (context) => BottomScreen()
-                      ));
-                    }
-                  } catch (e) { print(e); }
-                }),
-                SizedBox(height: 20.0),
-                const Text(socialMediaLabel),
-                SizedBox(height: 20.0),
-                const SizedBox(height: 20.0),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SocialMediaButton(fbColor,Icons.facebook,white,(){}),
-                    const SizedBox(width: 20.0),
-                    GoogleButton(),
-                  ],
-                )
-              ],
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CustomTextField(
+                    fullName,
+                    userNameController,
+                        (value){ value = userNameController.text.trim();},
+                        validateUserName,
+                    false,
+                  ),
+                  SizedBox(height: 20.0),
+                  CustomTextField(
+                    email,
+                    emailController,
+                        (value){ value = emailController.text.trim();},
+                       validateEmail,
+                    false,
+                  ),
+                  SizedBox(height: 20.0),
+                  CustomTextField(
+                    password,
+                    passwordController,
+                        (value){ value = passwordController.text.trim();},
+                    validatePassword,
+                    true,
+                  ),
+                  const SizedBox(height: 20.0),
+                  _richText(),
+                  BlackButton(
+                      signup, () async{
+                      setState(() {
+                        isIndicate = true;
+                      });
+                      if (_formKey.currentState!.validate()) {
+                        try {
+                          final newUser = await _auth
+                              .createUserWithEmailAndPassword(
+                              email: emailController.text,
+                              password: passwordController.text);
+                          _addUser();
+                          if (newUser != null) {
+                            Navigator.pushReplacement(
+                                context, MaterialPageRoute(
+                                builder: (context) => BottomScreen()
+                            ));
+                          }
+                        } catch (e) {
+                          print(e);
+                        }
+                      }
+                  }),
+                  SizedBox(height: 20.0),
+                  Text(socialMediaLabel),
+                  SizedBox(height: 20.0),
+                  SocialMediaRow()
+                ],
+              ),
             ),
           ),
         )
     );
   }
+  _richText() => RichText(
+    text: const TextSpan(
+        text: registerTextTerm,
+        style: TextStyle(fontWeight: FontWeight.bold,color: black),
+        children: [
+          TextSpan(text: registerTextMid,style: TextStyle(color: grey)),
+          TextSpan(text: registerTextPolicy,style: TextStyle(fontWeight: FontWeight.bold,color: black)),
+        ]
+    ),
+  );
 }

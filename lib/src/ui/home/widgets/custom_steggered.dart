@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 import '../../../base/constants/strings_constant.dart';
+import '../../../base/constants/textstyle_constant.dart';
 
 class CustomSteggered extends StatelessWidget{
 
@@ -25,7 +26,7 @@ class CustomSteggered extends StatelessWidget{
                   padding: const EdgeInsets.all(8.0),
                   child: Align(
                     alignment: Alignment.bottomLeft,
-                    child: Text(label,style: kTextWhiteStyle,),
+                    child: Text(label,style: kTextWhiteStyle),
                   ),
                 )
               ],

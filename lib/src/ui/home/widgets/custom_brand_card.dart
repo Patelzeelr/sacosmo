@@ -6,7 +6,7 @@ import 'package:cosmo_beauty/src/ui/home/widgets/custom_alignment.dart';
 import 'package:flutter/material.dart';
 
 class CustomBrandCard extends StatelessWidget {
-  final Stream<QuerySnapshot> popularItems = FirebaseFirestore.instance.collection('arrivalItem').snapshots();
+  final Stream<QuerySnapshot> popularItems = FirebaseFirestore.instance.collection('dior').snapshots();
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +29,7 @@ class CustomBrandCard extends StatelessWidget {
                     child: Column(
                       children: [
                         Container(
+                          height: 210.0,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10.0),
                             color: white,
@@ -41,7 +42,7 @@ class CustomBrandCard extends StatelessWidget {
                             child: Column(
                               children: [
                                 Align(alignment: Alignment.topRight,child: Icon(Icons.favorite_border)),
-                                Image(image: NetworkImage(data.docs[i]['image']),height: 100.0,width: 100.0,),
+                                Expanded(child: Image(image: NetworkImage(data.docs[i]['image']),height: 100.0,width: 100.0,)),
                                 CustomAlignmnet(Alignment.bottomLeft, Text(data.docs[i]['productName'])),
                                 CustomAlignmnet(Alignment.bottomLeft, Text(data.docs[i]['productPrice']))
                               ],

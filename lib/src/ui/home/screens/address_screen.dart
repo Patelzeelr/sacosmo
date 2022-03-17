@@ -1,11 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosmo_beauty/src/base/constants/color_constant.dart';
+import 'package:cosmo_beauty/src/base/constants/icons_constant.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import '../../../base/constants/param_constant.dart';
 import '../../../base/constants/strings_constant.dart';
+import '../../../base/constants/textstyle_constant.dart';
+import '../widgets/custom_address_row.dart';
 
 class AddressScreen extends StatefulWidget {
   @override
@@ -53,7 +56,7 @@ class _AddressScreenState extends State<AddressScreen> {
         elevation: 0.0,
         backgroundColor: white,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: black),
+          icon: Icon(iconArrow, color: black),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -74,50 +77,48 @@ class _AddressScreenState extends State<AddressScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              Text(data[paramTitle],style: kTextBoldStyle),
+                              SizedBox(height: 10.0),
+                              CustomAddressRow(iconAccount, Text(data[paramFirstName] + data[paramLastName],style: kTextGreyBigBoldStyle)),
+                              SizedBox(height: 10.0),
+                              CustomAddressRow(iconAddress, SizedBox(width:180.0,child: Text(data[paramSociety] + data[paramLandmark] + data[paramArea] + data[paramCity],style: kTextBlackSmallStyle))),
+                              SizedBox(
+                                height: 20.0,
+                                width: 300.0,
+                                child: Center(
+                                  child: Container(
+                                    padding: EdgeInsets.all(10),
+                                    height: 1.0,
+                                    color: grey,
+                                  ),
+                                ),
+                              ),
                               Row(
                                 children: [
-                                  Icon(Icons.location_on_rounded),
-                                  SizedBox(height: 10.0),
-                                  Text(data['title'], style: kTextBoldStyle),
+                                  CustomAddressRow(iconPhone, SizedBox(width:180.0,child: Text(data[paramMobileNo],style: kTextBlackSmallStyle)),),
+                                  OutlinedButton(
+                                      style: OutlinedButton.styleFrom(
+                                        backgroundColor: black,
+                                      side: BorderSide(width: 1, color: black),
+                                    ),
+                                    onPressed: () {
+                                      FirebaseFirestore.instance.collection("user").doc(FirebaseAuth.instance.currentUser?.email).collection("addressList").doc(data.id).delete();
+                                      showMessage('Your Address is Deleted');
+                                    },
+                                    child: Text('Delete',style: kTextWhiteSmallStyle),
+                                    )
                                 ],
-                              ),
-                              SizedBox(height: 10.0),
-                              Text(data['firstname'] + data['lastname'],
-                                  style: kTextGreyBigBoldStyle),
-                              SizedBox(height: 10.0),
-                              SizedBox(
-                                  width: 180.0,
-                                  child: Text(
-                                      data['scoiety'] +
-                                          data['landmark'] +
-                                          data['aera'],
-                                      style: kTextBlackSmallStyle)),
-                              SizedBox(height: 10.0),
-                              Text(data['city'], style: kTextBlackSmallStyle),
-                              SizedBox(height: 10.0),
-                              SizedBox(
-                                  width: 180.0,
-                                  child: Text(data['pincode'],
-                                      style: kTextBlackSmallStyle)),
+                              )
                             ],
                           ),
                         ),
-                        IconButton(
-                            onPressed: () {
-                              FirebaseFirestore.instance.collection("user").doc(FirebaseAuth.instance.currentUser?.email).collection("addressList").doc(data.id).delete();
-                              showMessage('Your Address is Deleted');
-                              },
-                            icon: Icon(Icons.delete))
-
-
                       ],
                     ),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10.0),
                       color: white,
                       boxShadow: [
-                        BoxShadow(
-                            color: grey.withOpacity(0.2), blurRadius: 8.0),
+                        BoxShadow(color: grey.withOpacity(0.2), blurRadius: 8.0),
                       ],
                     ),
                   );
@@ -127,6 +128,3 @@ class _AddressScreenState extends State<AddressScreen> {
     );
   }
 }
-
-/*
-*/

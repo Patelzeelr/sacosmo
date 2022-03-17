@@ -9,7 +9,6 @@ class FavouriteProvider with ChangeNotifier {
     required String image,
   }) {
     Map<String, dynamic> favouriteData = {
-      //"cartId": cartId,
       "image": image,
       "productName": productName,
       "productPrice": productPrice,
@@ -18,6 +17,6 @@ class FavouriteProvider with ChangeNotifier {
     FirebaseFirestore.instance
         .collection("user")
         .doc(FirebaseAuth.instance.currentUser?.email)
-        .collection("favourite").add(favouriteData);
+        .collection("favourite").doc(productName).set(favouriteData);
   }
 }

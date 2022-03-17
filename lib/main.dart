@@ -10,8 +10,7 @@ import 'package:provider/provider.dart';
 
 Future<void> main() async{
 
- /* SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-      overlays: [SystemUiOverlay.bottom]);*/
+
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(const MyApp());

@@ -1,8 +1,17 @@
+//splash screen
+const String appLogo = 'assets/images/appLogo.png';
+const String appAccLogo = 'assets/images/spbg.png';
+
+//welcome screen
+const String onboardOne = 'assets/images/ob1.png';
+const String onboardTwo = 'assets/images/ob2.png';
+const String onboardThree = 'assets/images/ob3.png';
+
 //home screen
-const String face = 'assets/images/makeup (1).png';
-const String lip = 'assets/images/lipstick.png';
-const String eye = 'assets/images/mascara.png';
-const String nail = 'assets/images/nail-polish.png';
+const String imageFace = 'assets/images/makeup (1).png';
+const String imageLip = 'assets/images/lipstick.png';
+const String imageEye = 'assets/images/mascara.png';
+const String imageNail = 'assets/images/nail-polish.png';
 const String homeMain = 'assets/images/three.jpeg';
 const String homeMain1 = 'assets/images/brandMain.jpeg';
 
@@ -22,8 +31,3 @@ const String brandMain = 'assets/images/brandMain2.jpeg';
 
 //userprofile
 const String user = 'assets/images/profile.jpg';
-
-//shades
-const String shade1 = 'assets/images/shade1.jpg';
-const String shade2 = 'assets/images/shade2.jpg';
-const String shade3 = 'assets/images/shade3.jpg';

@@ -5,22 +5,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
-import '../../../base/constants/strings_constant.dart';
+import '../../../base/constants/textstyle_constant.dart';
 import '../provider/favourite_provider.dart';
 import '../widgets/custom_alignment.dart';
 
 class BrandViewAllScreen extends StatefulWidget{
+final String docKey;
 
-  final dynamic doc;
-
-  const BrandViewAllScreen({Key? key, this.doc}) : super(key: key);
-
+  const BrandViewAllScreen({Key? key, required this.docKey}) : super(key: key);
   @override
   State<BrandViewAllScreen> createState() => _BrandViewAllScreenState();
 }
 
 class _BrandViewAllScreenState extends State<BrandViewAllScreen> {
-  final Stream<QuerySnapshot> popularItems = FirebaseFirestore.instance.collection('arrivalItem').snapshots();
 
   void showMessage(String value) {
     Fluttertoast.showToast(
@@ -36,6 +33,7 @@ class _BrandViewAllScreenState extends State<BrandViewAllScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     FavouriteProvider favProvider = Provider.of(context);
     return Scaffold(
       appBar: AppBar(
@@ -48,7 +46,7 @@ class _BrandViewAllScreenState extends State<BrandViewAllScreen> {
       body: Padding(
         padding: const EdgeInsets.all(10.0),
         child: StreamBuilder<QuerySnapshot>(
-          stream: popularItems,
+          stream: FirebaseFirestore.instance.collection(widget.docKey).snapshots(),
             builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if(!snapshot.hasData){
                 return Center(child: CircularProgressIndicator(),);

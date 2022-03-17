@@ -1,5 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cosmo_beauty/src/base/constants/param_constant.dart';
 import 'package:flutter/material.dart';
+
+import '../../../base/constants/strings_constant.dart';
+import '../../../base/constants/textstyle_constant.dart';
 
 class CustomPopularList extends StatelessWidget{
 
@@ -23,14 +27,16 @@ class CustomPopularList extends StatelessWidget{
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Row(
                   children: [
-                    Image(image: NetworkImage(data.docs[i]['image']),height: MediaQuery.of(context).size.height * 0.1,width: MediaQuery.of(context).size.width * 0.1,),
+                    Image(image: NetworkImage(data.docs[i][paramImage]),height: MediaQuery.of(context).size.height * 0.1,width: MediaQuery.of(context).size.width * 0.1,),
                     SizedBox(width: 20.0),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(data.docs[i]['productName']),
-                        Text(data.docs[i]['productPrice']),
-                        Text(data.docs[i]['color']),
+                        Text(data.docs[i][paramProductName],style: kBoldBlackStyle),
+                        SizedBox(height: 2.0),
+                        Text(data.docs[i][paramProductPrice],style: kTextBlackStyle),
+                        SizedBox(height: 2.0),
+                        Text(data.docs[i][paramColor],style: kTextGreyThinStyle),
                       ],
                     ),
                   ],

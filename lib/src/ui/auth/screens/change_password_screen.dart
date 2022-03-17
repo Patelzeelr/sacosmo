@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../../base/constants/strings_constant.dart';
 import '../../home/widgets/custom_black_button.dart';
 import '../../../base/constants/color_constant.dart';
 import '../model/firebase_service.dart';
@@ -18,7 +19,7 @@ class ChangePassword extends StatelessWidget{
         elevation: 0.0,
         backgroundColor: offWhite,
         title: Text(
-          'New Password',
+          newPass,
           style: TextStyle(fontFamily: 'Raleway',color: Colors.black,fontWeight: FontWeight.bold),),
         centerTitle: true,
         leading: IconButton(icon: Icon(Icons.arrow_back_ios,color: Colors.black), onPressed: (){
@@ -29,11 +30,11 @@ class ChangePassword extends StatelessWidget{
         padding: EdgeInsets.all(20.0),
         child: Column(
           children: [
-            Text('Change Password',style: TextStyle(color: grey),),
+            Text(changePass,style: TextStyle(color: grey),),
             SizedBox(height: 20.0),
             _phoneField(),
             SizedBox(height: 20.0),
-            BlackButton("Change Password", () async {
+            BlackButton(changePass, () async {
               final user = FirebaseAuth.instance.currentUser;
               await user?.updatePassword(passwordController.text.toString());
               FirebaseService service = new FirebaseService();
@@ -62,10 +63,10 @@ class ChangePassword extends StatelessWidget{
         focusedBorder: UnderlineInputBorder(
             borderSide: BorderSide(color: darkGrey)
         ),
-        focusColor: Colors.red,
-        hintText: 'Change Password',
+        hintText: changePass,
         prefixIcon: Icon(Icons.key,color: black,)
     ),
+    obscureText: true,
     controller: passwordController,
     onChanged: (value) {
       value = passwordController.text.trim();

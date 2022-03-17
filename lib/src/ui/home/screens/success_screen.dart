@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../base/constants/strings_constant.dart';
+import '../../../base/constants/textstyle_constant.dart';
 
 class SuccessScreen extends StatelessWidget{
 

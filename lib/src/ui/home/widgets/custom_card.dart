@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosmo_beauty/src/base/constants/color_constant.dart';
+import 'package:cosmo_beauty/src/base/constants/param_constant.dart';
+import 'package:cosmo_beauty/src/base/constants/strings_constant.dart';
 import 'package:cosmo_beauty/src/ui/home/widgets/custom_alignment.dart';
 import 'package:cosmo_beauty/src/ui/home/widgets/favourite_icon_button.dart';
 import 'package:cosmo_beauty/src/ui/home/widgets/showMessage.dart';
@@ -8,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+import '../../../base/constants/textstyle_constant.dart';
 import '../provider/favourite_provider.dart';
 
 class CustomCard extends StatefulWidget {
@@ -21,7 +24,6 @@ class CustomCard extends StatefulWidget {
 
 class _CustomCardState extends State<CustomCard> {
   List _allResults = [];
-
   getProductDetail() async {
     var data = await FirebaseFirestore.instance.collection('arrivalItem').get();
     setState(() {
@@ -36,7 +38,6 @@ class _CustomCardState extends State<CustomCard> {
     super.initState();
     getProductDetail();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +55,6 @@ class _CustomCardState extends State<CustomCard> {
               children: [
                 Container(
                   margin: EdgeInsets.all(10.0),
-                  //height: MediaQuery.of(context).size.height * 0.2,
                   width: MediaQuery.of(context).size.width * 0.5,
                   child: Column(
                     children: [
@@ -76,22 +76,22 @@ class _CustomCardState extends State<CustomCard> {
                                 FavouriteIconButton(
                                     () {
                                       favProvider.addFavouriteData(
-                                      image: data['image'],
-                                      productName: data['productName'],
-                                      productPrice: data['productPrice']);
-                                      showMessage("Your item is added to wishlist");
+                                      image: data[paramImage],
+                                      productName: data[paramProductName],
+                                      productPrice: data[paramProductPrice]);
+                                      showMessage(wishlistMessage);
                                     },
                                 )
                               ),
                               Image(
-                                image: NetworkImage(data['image']),
+                                image: NetworkImage(data[paramImage]),
                                 height: 100.0,
                                 width: 100.0,
                               ),
                               CustomAlignmnet(
                                   Alignment.bottomLeft,
-                                  Chip(
-                                    label: Text('new'),
+                                  const Chip(
+                                    label: Text(newArrival),
                                   ))
                             ],
                           ),
@@ -101,9 +101,11 @@ class _CustomCardState extends State<CustomCard> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(data['productBrand']),
-                          Text(data['productName']),
-                          Text(data['productPrice'])
+                          Text(data[paramProductBrand],style: kSemiBoldGreyStyle),
+                          SizedBox(height: 5.0),
+                          Text(data[paramProductName],style: kBoldBlackStyle),
+                          SizedBox(height: 5.0),
+                          Text('\$${data[paramProductPrice]}',style: kTextGreyStyle)
                         ],
                       ),
                     ],

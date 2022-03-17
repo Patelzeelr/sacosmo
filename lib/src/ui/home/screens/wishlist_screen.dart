@@ -1,11 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cosmo_beauty/src/base/constants/color_constant.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../../base/constants/color_constant.dart';
+import '../../../base/constants/param_constant.dart';
 import '../../../base/constants/strings_constant.dart';
+import '../../../base/constants/textstyle_constant.dart';
+import '../provider/cart_provider.dart';
 import 'cart_detail_screen.dart';
-
 class WishListScreen extends StatefulWidget{
+
+  final dynamic doc;
+
+  const WishListScreen({
+    Key? key,
+    this.doc,
+  }) : super(key: key);
 
   @override
   State<WishListScreen> createState() => _WishListScreenState();
@@ -13,6 +23,51 @@ class WishListScreen extends StatefulWidget{
 
 class _WishListScreenState extends State<WishListScreen> {
   final Stream<QuerySnapshot> favItems = FirebaseFirestore.instance.collection('user').doc(FirebaseAuth.instance.currentUser?.email).collection('favourite').snapshots();
+
+  late ReviewCartProvider reviewCartProvider;
+  int count = 1;
+
+  addToCart(data) async {
+    reviewCartProvider =
+        Provider.of<ReviewCartProvider>(context, listen: false);
+
+    await FirebaseFirestore.instance
+        .collection('user')
+        .doc(FirebaseAuth.instance.currentUser?.email)
+        .collection('cartDetail')
+        .get()
+        .then((QuerySnapshot querySnapshot) async {
+      if (querySnapshot.docs.isNotEmpty) {
+        for (var element in querySnapshot.docs) {
+          if (element[paramProductName] == data[paramProductName]) {
+            await FirebaseFirestore.instance
+                .collection('user')
+                .doc(FirebaseAuth.instance.currentUser?.email)
+                .collection('cartDetail')
+                .doc(element.id)
+                .update({
+              paramProductCount: (element[paramProductCount] + 1),
+            });
+            return;
+          }
+        }
+        if (querySnapshot.docs.isNotEmpty) {
+          reviewCartProvider.addReviewCartData(
+              image: data[paramImage],
+              productName: data[paramProductName],
+              productPrice: data[paramProductPrice],
+              productCount: count);
+        }
+      }
+      if (querySnapshot.docs.isEmpty) {
+        reviewCartProvider.addReviewCartData(
+            image: data[paramImage],
+            productName: data[paramProductName],
+            productPrice: data[paramProductPrice],
+            productCount: count);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,26 +102,24 @@ class _WishListScreenState extends State<WishListScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
                       child: Row(
                         children: [
-                          Image(image: NetworkImage(data['image']),height: MediaQuery.of(context).size.height * 0.2,width: MediaQuery.of(context).size.width * 0.25,),
+                          Image(image: NetworkImage(data[paramImage]),height: MediaQuery.of(context).size.height * 0.2,width: MediaQuery.of(context).size.width * 0.25,),
                           SizedBox(width: 20.0),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SizedBox(width: 160,child: Text(data['productName'],style: kTextBlackBoldStyle)),
+                              SizedBox(width: 160,child: Text(data[paramProductName],style: kTextBlackBoldStyle)),
                               SizedBox(height: 2.0),
-                              Text(data['productPrice'],style: kTextBlackBoldStyle),
+                              Text(data[paramProductPrice],style: kTextBlackBoldStyle),
                               SizedBox(height: 10.0),
                               OutlinedButton(onPressed: (){
-                                Map<String, dynamic> cartData = {
-                                  "image": data['image'],
-                                  "productName": data['productName'],
-                                  "productPrice": data['productPrice'],
-                                  "isAdd":true,
-                                };
-                                FirebaseFirestore.instance.collection("user").doc(FirebaseAuth.instance.currentUser?.email).collection("cartDetail").add(cartData);
+                                addToCart(data);
                                 Navigator.push(context, MaterialPageRoute(
                                     builder: (context) => CartDetail()//ReviewCart()
                                 ));
+                                FirebaseFirestore.instance
+                                    .collection('user')
+                                    .doc(FirebaseAuth.instance.currentUser?.email)
+                                    .collection('favourite').doc(data.id).delete();
                               }, child: Text('Move To Bag',style: TextStyle(color: black))),
                             ],
                           ),

@@ -1,13 +1,13 @@
-import 'package:cosmo_beauty/src/base/constants/color_constant.dart';
-import 'package:cosmo_beauty/src/ui/home/screens/brand_screen.dart';
-import 'package:cosmo_beauty/src/ui/home/screens/category_screen.dart';
-import 'package:cosmo_beauty/src/ui/home/screens/home_screen.dart';
-import 'package:cosmo_beauty/src/ui/home/screens/userprofile_screen.dart';
-import 'package:cosmo_beauty/src/ui/home/screens/wishlist_screen.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cosmo_beauty/src/base/constants/icons_constant.dart';
 import 'package:flutter/material.dart';
 
+import '../../../base/constants/color_constant.dart';
 import '../../../base/constants/strings_constant.dart';
+import 'category_screen.dart';
+import 'home_screen.dart';
+import 'screen_brand.dart';
+import 'userprofile_screen.dart';
+import 'wishlist_screen.dart';
 
 class BottomScreen extends StatefulWidget{
 
@@ -21,7 +21,7 @@ class _BottomScreenState extends State<BottomScreen> {
   final _pages = [
     HomeScreen(),
     CategoryScreen(),
-    BrandScreen(),
+    ScreenBrand(),
     WishListScreen(),
     UserProfileScreen()
   ];
@@ -56,23 +56,23 @@ class _BottomScreenState extends State<BottomScreen> {
       child: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.widgets),
+            icon: Icon(iconHome),
             label: home,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.category),
+            icon: Icon(iconCategory),
             label: category,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.filter_list),
+            icon: Icon(iconBrand),
             label: brand,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.favorite_border),
+            icon: Icon(iconWishlist),
             label: wishlist,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
+            icon: Icon(iconUserProfile),
             label: account,
           ),
         ],
@@ -83,6 +83,7 @@ class _BottomScreenState extends State<BottomScreen> {
       ),
     ),
   );
+
 }
 
 

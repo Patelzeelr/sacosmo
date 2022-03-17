@@ -7,12 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 import '../../../base/constants/strings_constant.dart';
+import '../../../base/constants/textstyle_constant.dart';
 
 class CategoryScreen extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: SingleChildScrollView(
           child: Column(
@@ -25,11 +25,24 @@ class CategoryScreen extends StatelessWidget{
                 children: [
                   CustomSteggered(2, 2, rareFoundation, 'Face',(){
                     Navigator.push(context, MaterialPageRoute(
-                      builder: (context) => FaceCategoryScreen()
-                  ));}),
-                  CustomSteggered(2, 3, nailPolish, 'Nail',(){}),
-                  CustomSteggered(2, 2.5, kylieLip, 'Lip',(){}),
-                  CustomSteggered(2, 2.5, eyeShadow, 'Eye',(){}),
+                        builder: (context) => FaceCategoryScreen(value: face)
+                    ));
+                  }),
+                  CustomSteggered(2, 3, nailPolish, 'Nail',(){
+                    Navigator.push(context, MaterialPageRoute(
+                        builder: (context) => FaceCategoryScreen(value: nail)
+                    ));
+                  }),
+                  CustomSteggered(2, 2.5, kylieLip, 'Lip',(){
+                    Navigator.push(context, MaterialPageRoute(
+                        builder: (context) => FaceCategoryScreen(value: lip)
+                    ));
+                  }),
+                  CustomSteggered(2, 2.5, eyeShadow, 'Eye',(){
+                    Navigator.push(context, MaterialPageRoute(
+                        builder: (context) => FaceCategoryScreen(value: eye)
+                    ));
+                  }),
                   _steggeredOther(),
                 ],
               ),

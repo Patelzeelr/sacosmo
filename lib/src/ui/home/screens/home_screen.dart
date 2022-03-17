@@ -7,6 +7,7 @@ import 'package:cosmo_beauty/src/ui/home/widgets/custom_popular_list.dart';
 import 'package:cosmo_beauty/src/ui/home/widgets/custom_image_container.dart';
 import 'package:flutter/material.dart';
 import '../../../base/constants/strings_constant.dart';
+import '../../../base/constants/textstyle_constant.dart';
 
 class HomeScreen extends StatefulWidget{
 
@@ -18,7 +19,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: SingleChildScrollView(
         physics: ScrollPhysics(),
@@ -26,14 +26,14 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             CustomImageContainer(),
             const SizedBox(height: 20.0,),
-            CustomPadding(arrivals,Alignment.bottomLeft,kTextBoldStyle),
+            CustomPadding(arrivals,Alignment.bottomLeft,kHomeTextHeadingStyle),
             const SizedBox(height: 10.0,),
             ContainerList(CustomCard(),100.0,0.42),
-            CustomPadding(category,Alignment.bottomLeft,kTextBoldStyle),
+            CustomPadding(category,Alignment.bottomLeft,kHomeTextHeadingStyle),
             const SizedBox(height: 10.0,),
             ContainerList(CustomCategoryCard(),100.0,0.15),
             const SizedBox(height: 10.0,),
-            CustomPadding(popular,Alignment.bottomLeft,kTextBoldStyle),
+            CustomPadding(popular,Alignment.bottomLeft,kHomeTextHeadingStyle),
             CustomPopularList(),
           ],
         ),

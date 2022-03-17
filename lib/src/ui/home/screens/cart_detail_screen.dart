@@ -1,12 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../../../base/constants/color_constant.dart';
-import '../../../base/constants/strings_constant.dart';
-import '../model/cart_model.dart';
+import '../../../base/constants/icons_constant.dart';
+import '../../../base/constants/param_constant.dart';
+import '../../../base/constants/textstyle_constant.dart';
 import '../provider/cart_provider.dart';
+import '../widgets/count.dart';
 import '../widgets/custom_alignment.dart';
 import 'delivery_screen.dart';
 
@@ -17,6 +19,9 @@ class CartDetail extends StatefulWidget{
 }
 
 class _CartDetailState extends State<CartDetail> {
+
+  int count = 1;
+  bool isTrue = false;
 
   @override
   void initState() {
@@ -43,7 +48,7 @@ class _CartDetailState extends State<CartDetail> {
         centerTitle: true,
         leading: IconButton(onPressed: (){
           Navigator.pop(context);
-        },icon: Icon(Icons.arrow_back_ios),color: black),
+        },icon: Icon(iconArrow),color: black),
         title: Text('Cart',style: kTextBoldBigStyle),
       ),
       body: StreamBuilder<QuerySnapshot>(
@@ -62,14 +67,16 @@ class _CartDetailState extends State<CartDetail> {
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Row(
                   children: [
-                    Image(image: NetworkImage(data!['image']),height: MediaQuery.of(context).size.height * 0.2,width: MediaQuery.of(context).size.width * 0.25,),
+                    Image(image: NetworkImage(data![paramImage]),height: MediaQuery.of(context).size.height * 0.2,width: MediaQuery.of(context).size.width * 0.25,),
                     SizedBox(width: 20.0),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(width: 160.0,child: Text(data['productName'],style: kTextBlackBoldStyle)),
+                        SizedBox(width: 160.0,child: Text(data[paramProductName],style: kTextBlackBoldStyle)),
                         SizedBox(height: 2.0),
-                        Text('\$ ${data['productPrice']}',style: kTextBlackBoldStyle),
+                        Text('\$ ${data[paramProductPrice]}',style: kTextBlackBoldStyle),
+                        SizedBox(height: 10.0),
+                        Count(data.id,data[paramImage],data[paramProductName],data[paramProductPrice],data[paramProductCount])
                       ],
                     ),
                     IconButton(onPressed: (){
@@ -87,7 +94,6 @@ class _CartDetailState extends State<CartDetail> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            //\$ ${reviewCartProvider.getTotalPrice()}
             Text('Grand Total: ${Provider.of<ReviewCartProvider>(context).totalCount}',style: kTextBoldStyle),
             GestureDetector(
                 onTap: (){
@@ -107,40 +113,6 @@ class _CartDetailState extends State<CartDetail> {
           ],
         ),
       ),
-    );
-  }
-  showAlertDialog(BuildContext context, ReviewCartModel delete) {
-    // set up the buttons
-    Widget cancelButton = FlatButton(
-      child: Text("No"),
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
-    );
-    Widget continueButton = FlatButton(
-      child: Text("Yes"),
-      onPressed: () {
-        // reviewCartProvider.reviewCartDataDelete();
-        Navigator.of(context).pop();
-      },
-    );
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text("Cart Product"),
-      content: Text("Are you sure?"),
-      actions: [
-        cancelButton,
-        continueButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
     );
   }
 }

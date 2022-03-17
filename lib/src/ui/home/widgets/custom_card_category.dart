@@ -2,6 +2,7 @@ import 'package:cosmo_beauty/src/base/constants/image_constant.dart';
 import 'package:flutter/material.dart';
 
 import '../../../base/constants/color_constant.dart';
+import '../../../base/constants/strings_constant.dart';
 import '../screens/facecategory_screen.dart';
 
 class CustomCardCategory {
@@ -12,13 +13,14 @@ class CustomCardCategory {
 }
 List<CustomCardCategory> categoryData = [
 
-  CustomCardCategory(skin, face),
-  CustomCardCategory(babyPink, lip),
-  CustomCardCategory(nude, eye),
-  CustomCardCategory(lightPink, nail),
+  CustomCardCategory(skin, imageFace),
+  CustomCardCategory(babyPink, imageLip),
+  CustomCardCategory(nude, imageEye),
+  CustomCardCategory(lightPink, imageNail),
 
   ];
 class CustomCategoryCard extends StatelessWidget{
+  List _list = [face,lip,eye,nail];
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +32,7 @@ class CustomCategoryCard extends StatelessWidget{
               itemBuilder: (context,i) => GestureDetector(
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(
-                      builder: (context) => FaceCategoryScreen()
+                      builder: (context) => FaceCategoryScreen(value: _list[i])
                   ));
                 },
                 child: Card(

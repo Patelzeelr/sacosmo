@@ -1,10 +1,11 @@
-import 'package:cosmo_beauty/src/ui/auth/screens/login_screen.dart';
-import 'package:cosmo_beauty/src/ui/auth/screens/sizeConfig.dart';
-import 'package:cosmo_beauty/src/ui/welcome/widgets/onboard_content.dart';
-import 'package:cosmo_beauty/src/ui/home/widgets/custom_black_button.dart';
 import 'package:flutter/material.dart';
 
+import '../../../base/constants/image_constant.dart';
 import '../../../base/constants/strings_constant.dart';
+import '../../../base/constants/textstyle_constant.dart';
+import '../../auth/screens/login_screen.dart';
+import '../../auth/screens/sizeConfig.dart';
+import '../../home/widgets/custom_black_button.dart';
 
 
 class Body extends StatefulWidget {
@@ -16,17 +17,16 @@ class _BodyState extends State<Body> {
   int currentPage = 0;
   List<Map<String, String>> splashData = [
     {
-      "text": "Welcome to SA Cosmo, Let’s shop!",
-      "image": "assets/images/ob1.png"
+      "text": onboardTextOne,
+      "image": onboardOne
     },
     {
-      "text":
-      "We help people connect with store \naround World",
-      "image": "assets/images/ob2.png"
+      "text": onboardTextTwo,
+      "image": onboardTwo
     },
     {
-      "text": "We show the easy way to shop. \nJust stay at home with us",
-      "image": "assets/images/ob3.png"
+      "text": onboardTextThree,
+      "image": onboardThree
     },
   ];
   @override
@@ -45,9 +45,29 @@ class _BodyState extends State<Body> {
                   });
                 },
                 itemCount: splashData.length,
-                itemBuilder: (context, index) => OnboardContent(
-                  image: splashData[index]["image"],
-                  text: splashData[index]['text'],
+                itemBuilder: (context, index) => Column(
+                  children: <Widget>[
+                    Spacer(),
+                    Text(
+                      appName,
+                      style: TextStyle(
+                        fontSize: getProportionateScreenWidth(36),
+                        color: Color(0xFF8f7d5e),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      splashData[index]['text']!,
+                      textAlign: TextAlign.center,
+                      style: kTextBlackBoldStyle,
+                    ),
+                    Spacer(flex: 2),
+                    Image.asset(
+                      splashData[index]["image"]!,
+                      height: getProportionateScreenHeight(265),
+                      width: getProportionateScreenWidth(235),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -62,17 +82,15 @@ class _BodyState extends State<Body> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: List.generate(
-                        splashData.length,
+                            splashData.length,
                             (index) => buildDot(index: index),
                       ),
                     ),
                     Spacer(flex: 3),
                     BlackButton(
-                      "Login",
+                      login,
                       () {
-                        Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => LoginScreen()
-                        ));
+                        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> LoginScreen()), (route) => false);
                       },
                     ),
                     Spacer(),
